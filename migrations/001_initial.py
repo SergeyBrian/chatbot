@@ -30,9 +30,15 @@ steps = [
         );
     """),
     step("""
+        CREATE TABLE IF NOT EXISTS categories (
+            id SERIAL PRIMARY KEY,
+            name TEXT,
+        );
+    """),
+    step("""
         CREATE TABLE IF NOT EXISTS knowledge_base (
             id SERIAL PRIMARY KEY,
-            category TEXT NOT NULL,
+            category INT NOT NULL REFERENCES categories(id) ON DELETE CASCADE,
             question TEXT NOT NULL,
             answer TEXT NOT NULL,
             variations JSONB DEFAULT '[]'::jsonb
