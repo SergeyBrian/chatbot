@@ -26,3 +26,8 @@ def get_questions(
 @router.post('/', response_model=ResponseModel[Question])
 def create_question(question: Question):
     return safe_execute(uc.create, question)
+
+
+@router.delete('/{id}', response_model=ResponseModel[int])
+def delete_question(id: int):
+    return safe_execute(uc.delete, id)

@@ -60,3 +60,13 @@ class Repo(Interface):
                 )
                 for r in rows
             ]
+
+    def delete(self, id: int) -> int:
+        with self.cur() as cur:
+            sql = """
+                DELETE FROM questions WHERE id = $1
+            """
+            params: list = [id]
+            cur.execute(sql, tuple(params))
+
+        return id

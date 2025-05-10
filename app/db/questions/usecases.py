@@ -17,6 +17,9 @@ class Interface(Protocol):
     def get(self, req: SelectInput) -> list[Question]:
         ...
 
+    def delete(self, id: int) -> int:
+        ...
+
 
 class Usecases:
     def __init__(self, conn: Interface):
@@ -27,3 +30,6 @@ class Usecases:
 
     def get(self, req: SelectInput) -> list[Question]:
         return self.db.get(req=req)
+
+    def delete(self, id: int) -> int:
+        return self.db.delete(id=id)
