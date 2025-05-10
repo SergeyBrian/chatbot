@@ -1,10 +1,11 @@
 from fastapi import APIRouter
+from app.db.messages.usecases import Usecases
 
 router = APIRouter(prefix='/chat')
 
 
-@router.post('/message')
-def post_message():
+@router.post('/{id}/message')
+def post_message(id: int, text: str):
     return {'resp': 'OK'}
 
 

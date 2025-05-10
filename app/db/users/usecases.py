@@ -1,8 +1,14 @@
-from typing import Protocol
+from typing import Protocol, Optional
 from model.user import User
+from pydantic import BaseModel
 
 
-class Usecases(Protocol):
+class SelectInput(BaseModel):
+    limit: Optional[int] = 25
+    offset: Optional[int] = 0
+
+
+class Interface(Protocol):
     def create(self, User) -> User:
         ...
 
