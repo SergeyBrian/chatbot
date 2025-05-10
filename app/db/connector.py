@@ -1,6 +1,6 @@
 import psycopg
 from contextlib import contextmanager
-from config import settings
+from app.config.config import settings
 
 
 @contextmanager

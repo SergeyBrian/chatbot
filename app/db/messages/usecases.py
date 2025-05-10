@@ -22,8 +22,7 @@ class Usecases:
         self.db: Interface = conn
 
     def create(self, msg: Message) -> Message:
-        return {"res": self.db.create(msg)}
+        return self.db.create(msg)
 
     def get(self, req: SelectInput) -> list[Message]:
-        messages = self.db.get(req=SelectInput(chat_id=id))
-        return {"res": messages}
+        return self.db.get(req=req)
