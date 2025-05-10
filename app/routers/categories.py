@@ -11,8 +11,7 @@ uc = Usecases(repo)
 
 
 @router.get('/', response_model=ResponseModel[list[Category]])
-def get_categories(id: int = 0,
-                   limit: int = 7,
+def get_categories(limit: int = 7,
                    offset: int = 0,
                    search: str = ""):
     return safe_execute(uc.get, SelectInput(
@@ -20,3 +19,8 @@ def get_categories(id: int = 0,
         offset=offset,
         search=search,
     ))
+
+
+@router.post('/', response_model=ResponseModel[Category])
+def create_category(category: Category):
+    return safe_execute(uc.create, category)
