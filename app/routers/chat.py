@@ -4,7 +4,7 @@ from app.db.messages.pg import Repo
 from app.model.message import Message
 from app.utils import safe_execute
 
-router = APIRouter(prefix='/chat')
+router = APIRouter(prefix='/chat', tags=["chat"])
 
 repo = Repo()
 uc = Usecases(repo)
