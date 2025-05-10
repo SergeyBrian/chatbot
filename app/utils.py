@@ -14,5 +14,5 @@ T = TypeVar('T')
 
 
 class ResponseModel(BaseModel, Generic[T]):
-    msg: T
+    msg: T | str
     status: str

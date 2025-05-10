@@ -6,10 +6,10 @@ from app.model.category import Category
 
 class Repo(Interface):
     def __init__(self):
-        self.cur = get_cursor()
+        self.cur = get_cursor
 
     def create(self, msg: Category) -> Category:
-        with self.cur as cur:
+        with self.cur() as cur:
             cur.execute(
                 """
                 INSERT INTO categories (name)
@@ -23,7 +23,7 @@ class Repo(Interface):
             return Category(id=row[0], name=row[1])
 
     def get(self, req: SelectInput) -> List[Category]:
-        with self.cur as cur:
+        with self.cur() as cur:
             if req.search:
                 # ищем по подстроке, case-insensitive
                 pattern = f"%{req.search}%"

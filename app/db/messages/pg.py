@@ -1,4 +1,3 @@
-from typing import List
 from app.db.messages.usecases import Interface, SelectInput
 from app.db.connector import get_cursor
 from app.model.message import Message
@@ -6,10 +5,10 @@ from app.model.message import Message
 
 class Repo(Interface):
     def __init__(self):
-        self.cur = get_cursor()
+        self.cur = get_cursor
 
     def create(self, msg: Message) -> Message:
-        with self.cur as cur:
+        with self.cur() as cur:
             cur.execute(
                 """
                 INSERT INTO messages (dialog_id, sender, content)
@@ -24,7 +23,7 @@ class Repo(Interface):
         return msg
 
     def get(self, req: SelectInput) -> list[Message]:
-        with self.cur as cur:
+        with self.cur() as cur:
             cur.execute(
                 """
                 SELECT id, dialog_id, sender, content,

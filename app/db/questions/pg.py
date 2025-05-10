@@ -5,7 +5,7 @@ from app.model.question import Question
 
 class Repo(Interface):
     def __init__(self):
-        self.cur = get_cursor()
+        self.cur = get_cursor
 
     def create(self, msg: Question) -> Question:
         ...
