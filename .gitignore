@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+.env
+.venv/
+venv/
+env/
+ENV/
+
+# VSCode
+.vscode/
+
+# OS generated
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Docker
+*.pid
+docker-compose.override.yml
+
+# Pytest cache
+.pytest_cache/
+
+# MyPy cache
+.mypy_cache/
+
+# Uvicorn logs
+*.log
+
+# Coverage reports
+htmlcov/
+coverage.xml
+.cache/
+.coverage
+
+# Build artifacts
+build/
+dist/
+*.egg
+*.whl
+
+# IDEs
+.idea/
+
