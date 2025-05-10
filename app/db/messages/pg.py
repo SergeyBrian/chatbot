@@ -1,3 +1,4 @@
+from typing import List
 from app.db.messages.usecases import Interface, SelectInput
 from app.db.connector import get_cursor
 from app.model.message import Message
