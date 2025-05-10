@@ -1,4 +1,4 @@
-from app.db.messages.usecases import Interface, SelectInput
+from app.db.messages.usecases import Interface, SelectInput, UpdateInput
 from app.db.connector import get_cursor
 from app.model.message import Message
 
@@ -46,3 +46,36 @@ class Repo(Interface):
                 )
                 for r in rows
             ]
+
+    def update(self, req: UpdateInput) -> Message:
+        fields = []
+        values = []
+        if req.useful is not None:
+            fields.append("useful = %s")
+            values.append(req.useful)
+
+        if not fields:
+            raise ValueError("No fields to update")
+
+        values.append(req.id)
+
+        query = f"""
+        UPDATE messages
+        SET {', '.join(fields)}
+        WHERE id = %s
+        RETURNING id, dialog_id, sender, content, EXTRACT(EPOCH FROM created_at)::BIGINT, useful;
+        """
+
+        with self.cur() as cur:
+            cur.execute(query, values)
+            row = cur.fetchone()
+            if not row:
+                raise ValueError(f"Message with id {req.id} not found")
+            return Message(
+                id=row[0],
+                dialog_id=row[1],
+                sender=row[2],
+                content=row[3],
+                created_at=row[4],
+                useful=row[5],
+            )

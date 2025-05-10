@@ -9,11 +9,19 @@ class SelectInput(BaseModel):
     chat_id: int
 
 
+class UpdateInput(BaseModel):
+    id: int = 0
+    useful: bool | None = None
+
+
 class Interface(Protocol):
     def create(self, msg: Message) -> Message:
         ...
 
     def get(self, req: SelectInput) -> list[Message]:
+        ...
+
+    def update(self, req: UpdateInput) -> Message:
         ...
 
 
@@ -25,4 +33,7 @@ class Usecases:
         return self.db.create(msg)
 
     def get(self, req: SelectInput) -> list[Message]:
+        return self.db.get(req=req)
+
+    def update(self, req: UpdateInput) -> Message:
         return self.db.get(req=req)

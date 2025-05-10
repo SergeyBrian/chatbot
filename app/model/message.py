@@ -7,3 +7,4 @@ class Message(BaseModel):
     sender: int = 0
     content: str
     created_at: int = 0
+    useful: bool | None = None
