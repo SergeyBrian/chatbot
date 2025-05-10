@@ -2,8 +2,8 @@ from pydantic import BaseModel
 
 
 class Message(BaseModel):
-    id: int
-    dialog_id: int
-    sender: int
+    id: int = 0
+    dialog_id: int = 0
+    sender: int = 0
     content: str
-    created_at: int
+    created_at: int = 0

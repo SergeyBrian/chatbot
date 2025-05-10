@@ -22,7 +22,7 @@ class Repo(Interface):
             msg.created_at = created_at_epoch
         return msg
 
-    def get(self, req: SelectInput) -> List[Message]:
+    def get(self, req: SelectInput) -> list[Message]:
         with self.cur as cur:
             cur.execute(
                 """
