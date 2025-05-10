@@ -4,10 +4,26 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/postgres\?sslmode=disable
     ports:
       - "8000:8000"
     volumes:
       - ..:/app
+    entrypoint: >
+      sh -c "
+        # ждём, пока БД ответит на pg_isready
+        until pg_isready -h db -U postgres; do
+          echo 'waiting for db…'; sleep 2;
+        done
+        # накатываем миграции
+        yoyo apply --database \"$DATABASE_URL\" ./migrations
+        # запускаем приложение
+        exec uvicorn app:app --host 0.0.0.0 --port 8000
+      "
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
   db:
@@ -16,7 +32,17 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      retries: 5
     ports:
       - "5432:5432"
     networks:
       - backend
+
+volumes:
+  pgdata:
