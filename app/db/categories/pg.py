@@ -1,4 +1,3 @@
-from typing import List
 from app.db.categories.usecases import Interface, SelectInput
 from app.db.connector import get_cursor
 from app.model.category import Category
@@ -22,7 +21,7 @@ class Repo(Interface):
             # возвращаем Pydantic-модель с тем же именем и реальным id
             return Category(id=row[0], name=row[1])
 
-    def get(self, req: SelectInput) -> List[Category]:
+    def get(self, req: SelectInput) -> list[Category]:
         with self.cur() as cur:
             if req.search:
                 # ищем по подстроке, case-insensitive
