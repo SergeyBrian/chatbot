@@ -1,6 +1,7 @@
 from app.db.questions.usecases import Interface, SelectInput
 from app.db.connector import get_cursor
 from app.model.question import Question
+from app.model.question_csv import QuestionCSV
 
 
 class Repo(Interface):
@@ -11,9 +12,9 @@ class Repo(Interface):
         with self.cur() as cur:
             cur.execute(
                 """
-                INSERT INTO questions (category_id, question, answer)
+                INSERT INTO knowledge_base (category, question, answer)
                 VALUES (%s, %s, %s)
-                RETURNING id, category_id, question, answer;
+                RETURNING id, category, question, answer;
                 """,
                 (msg.category_id, msg.question, msg.answer),
             )
@@ -28,14 +29,14 @@ class Repo(Interface):
     def get(self, req: SelectInput) -> list[Question]:
         with self.cur() as cur:
             sql = """
-                SELECT id, category_id, question, answer
-                FROM questions
+                SELECT id, category, question, answer
+                FROM knowledge_base
             """
             params: list = []
             clauses: list = []
 
             if req.category_id:
-                clauses.append("category_id = %s")
+                clauses.append("category = %s")
                 params.append(req.category_id)
 
             if req.search:
@@ -64,9 +65,46 @@ class Repo(Interface):
     def delete(self, id: int) -> int:
         with self.cur() as cur:
             sql = """
-                DELETE FROM questions WHERE id = $1
+                DELETE FROM knowledge_base WHERE id = $1
             """
             params: list = [id]
             cur.execute(sql, tuple(params))
 
         return id
+
+    def get_all_for_export(self) -> list[QuestionCSV]:
+        with self.cur() as cur:
+            cur.execute("""
+                SELECT c.name, k.question, k.answer
+                FROM knowledge_base k
+                JOIN categories c ON k.category = c.id
+            """)
+            rows = cur.fetchall()
+            from app.model.question_csv import QuestionCSV
+            return [
+                QuestionCSV(category=r[0], question=r[1], answer=r[2])
+                for r in rows
+            ]
+
+    def import_from_csv(self, questions: list[QuestionCSV]) -> int:
+        count = 0
+        with self.cur() as cur:
+            for q in questions:
+                cur.execute(
+                    "SELECT id FROM categories WHERE name = %s", (q.category,))
+                category = cur.fetchone()
+                if not category:
+                    cur.execute(
+                        "INSERT INTO categories (name) VALUES (%s) RETURNING id;",
+                        (q.category,)
+                    )
+                    category = cur.fetchone()
+                cur.execute(
+                    """
+                    INSERT INTO knowledge_base (category, question, answer)
+                    VALUES (%s, %s, %s)
+                    """,
+                    (category[0], q.question, q.answer)
+                )
+                count += 1
+        return count

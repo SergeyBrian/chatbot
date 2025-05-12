@@ -3,3 +3,4 @@ uvicorn
 yoyo-migrations
 psycopg[binary]
 pydantic-settings
+python-multipart
