@@ -1,16 +1,27 @@
-from typing import Protocol, Optional
-from model.user import User
+from typing import Protocol
+from app.model.user import User
 from pydantic import BaseModel
 
 
 class SelectInput(BaseModel):
-    limit: Optional[int] = 25
-    offset: Optional[int] = 0
+    user_id: int
+    username: str
 
 
 class Interface(Protocol):
-    def create(self, User) -> User:
+    def create(self, msg: User) -> User:
         ...
 
-    def get(self, SelectInput) -> list(User):
+    def get(self, req: SelectInput) -> User:
         ...
+
+
+class Usecases:
+    def __init__(self, conn: Interface):
+        self.db: Interface = conn
+
+    def create(self, msg: User) -> User:
+        return self.db.create(msg)
+
+    def get(self, req: SelectInput) -> User:
+        return self.db.get(req=req)

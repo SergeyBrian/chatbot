@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 
 class User(BaseModel):
-    id: int
-    session_id: str
+    id: int = 0
+    session_id: int
     name: str
-    created_at: int
+    created_at: int = 0
